@@ -12,15 +12,18 @@ import {
     padding, size,
 } from '@expo/ui/jetpack-compose/modifiers';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useFocusEffect} from "expo-router";
+import {useFocusEffect, useRouter} from "expo-router";
+import { Plus } from "lucide-react-native";
 import {useCallback, useState} from "react";
+import {useTheme} from "react-native-paper";
 
 const shapeKey = "roamingguard.ui.shape"
 
 export default function SetShapeSettings() {
     const colors = useMaterialColors();
     const [currentShape, setCurrentShape] = useState("")
-
+    const router = useRouter()
+    const theme = useTheme()
 
     const setShape = async (id: string) =>  {
         await AsyncStorage.setItem(shapeKey, String(id))
@@ -158,6 +161,12 @@ export default function SetShapeSettings() {
                             color="#fba32b"
                             modifiers={[size(76, 76)]}
                         />
+                    </Box>
+                </TextButton>
+
+                <TextButton onClick={() => router.push("/designShape")} >
+                    <Box contentAlignment="center" >
+                        <Plus pointerEvents="none" color={theme.colors.primary} size={50} className="items-center justify-center"/>
                     </Box>
                 </TextButton>
 

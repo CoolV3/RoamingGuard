@@ -1,5 +1,5 @@
 # RoamingGuard
-An app that blocks your internet traffic if you are in a disallowed contry so you don´t acceddently pay for roaming fees.
+An android only app that blocks your internet traffic if you are in a disallowed contry so you don´t acceddently pay for roaming fees.
 
 ## Features
 - Fully functional Internet Blocking
@@ -45,6 +45,9 @@ In settings you can customize the app, set a theme and disable or enable haptic 
 
 ## Why I built it
 Because we went on a trip to monaco, and we forgot to turn mobile data off, and I wanted this to never happen again.
+
+## Why android only
+Cause on iPhone I have no way of detecting a network change.
 
 ## Screenshots of the app
 <p align="center">
