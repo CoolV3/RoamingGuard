@@ -2,59 +2,200 @@ import { useState } from 'react';
 import {Host, Slider, Shape, Box, Text, Column} from '@expo/ui/jetpack-compose';
 import {fillMaxWidth, padding, size,} from "@expo/ui/jetpack-compose/modifiers";
 import {View} from "react-native";
-import {useTheme} from "react-native-paper";
+import {Appbar, useTheme} from "react-native-paper";
+import {useLocalSearchParams, useRouter} from "expo-router";
 
 
 export default function DesignNewShapeScreen() {
     const [corners, setCorners] = useState(4)
     const [cornerRadius, setCornerRadius] = useState(0.2)
-    const [starRadius, setStarRadius] = useState(0.2)
-    const [innerRadius, setInnerRadius] = useState(1)
+    const [radius, setRadius] = useState(1)
+    const [innerRadius, setInnerRadius] = useState(0.5)
+
+    const [topStart, setTopStart] = useState(20)
+    const [topEnd, setTopEnd] = useState(20)
+    const [bottomStart, setBottomStart] = useState(20)
+    const [bottomEnd, setBottomEnd] = useState(20)
+    const [width, setWidth] = useState(150)
+    const [height, setHeight] = useState(150)
+
+
     const theme = useTheme()
+    const router = useRouter()
+    const { baseShape } = useLocalSearchParams<{baseShape?: string}>()
 
-    return(
-        <View className="items-center justify-center w-full h-full">
-            <Host matchContents={{ vertical: true }} style={{ width: '100%', paddingTop: 20}}>
-
-                <Column horizontalAlignment={"center"}>
+    if ((baseShape != "star") && (baseShape != "polygon") && (baseShape != "rectangle")) {
+        router.replace("/chooseBaseFormPage")
+    }
 
 
-                    <Shape.Star
-                        verticesCount={corners}
-                        radius={starRadius}
-                        innerRadius={innerRadius}
-                        cornerRounding={cornerRadius}
-                        color="#FF9800"
-                        modifiers={[size(80, 120)]}
-                    />
+        const configOptions = (baseShape == "star" ? [
+            {
+                label: "Radius",
+                min: 1,
+                max: 2,
+                value: radius,
+                setValue: setRadius
+            },
+            {
+                label: "Inner Radius",
+                min: 0.1,
+                max: 0.7,
+                value: innerRadius,
+                setValue: setInnerRadius
+            },
+            {
+                label: "Corner Rounding",
+                min: 0.01,
+                max: 0.2,
+                value: cornerRadius,
+                setValue: setCornerRadius
+            },
+            {
+                label: "Vertices",
+                min: 3,
+                max: 20,
+                value: corners,
+                setValue: setCorners
+            },
+            {
+                label: "Size",
+                min: 150,
+                max: 300,
+                value: width,
+                setValue: setWidth
+            },
+        ] : (baseShape == "polygon" ? [
 
-                    <Column horizontalAlignment="center">
-                        <Text>Corners</Text>
-                        <Box contentAlignment="center" modifiers={[fillMaxWidth()]}>
-                            <Slider modifiers={[size(250, 50)]} min={3} max={14} onValueChange={e => setCorners(e)} />
-                        </Box>
-                    </Column>
-                    <Column horizontalAlignment="center">
-                        <Text>Corner Radius</Text>
-                        <Box contentAlignment="center" modifiers={[fillMaxWidth()]}>
-                            <Slider modifiers={[size(250, 50)]} min={0.01} max={0.5} onValueChange={e => setCornerRadius(e)} />
-                        </Box>
-                    </Column>
-                    <Column horizontalAlignment="center">
-                        <Text>Inner Radius</Text>
-                        <Box contentAlignment="center" modifiers={[fillMaxWidth()]}>
-                            <Slider modifiers={[size(250, 50)]} min={1} max={5} onValueChange={e => setInnerRadius(e)} />
-                        </Box>
-                    </Column>
-                    <Column horizontalAlignment="center">
-                        <Text>Star Radius</Text>
-                        <Box contentAlignment="center" modifiers={[fillMaxWidth()]}>
-                            <Slider modifiers={[size(250, 50)]} min={1} max={5} onValueChange={e => setStarRadius(e)} />
-                        </Box>
-                    </Column>
+            {
+                label: "Vertices",
+                min: 3,
+                max: 20,
+                value: corners,
+                setValue: setCorners
+            },
+            {
+                label: "Corner Rounding",
+                min: 0.01,
+                max: 0.2,
+                value: cornerRadius,
+                setValue: setCornerRadius
+            },
+            {
+                label: "Size",
+                min: 150,
+                max: 300,
+                value: width,
+                setValue: setWidth
+            },
+        ] : [
 
-                </Column>
-            </Host>
-        </View>
+            {
+                label: "Top Left Corner Rounding",
+                min: 0,
+                max: 100,
+                value: topStart,
+                setValue: setTopStart
+            },
+            {
+                label: "Top Right Corner Rounding",
+                min: 0,
+                max: 100,
+                value: topEnd,
+                setValue: setTopEnd
+            },
+            {
+                label: "Bottom Left Corner Rounding",
+                min: 0,
+                max: 100,
+                value: bottomStart,
+                setValue: setBottomStart
+            },
+            {
+                label: "Bottom Right Corner Rounding",
+                min: 0,
+                max: 100,
+                value: bottomEnd,
+                setValue: setBottomEnd
+            },
+            {
+                label: "Width",
+                min: 150,
+                max: 200,
+                value: width,
+                setValue: setWidth
+            },
+            {
+                label: "Height",
+                min: 150,
+                max: 200,
+                value: height,
+                setValue: setHeight
+            },
+        ]))
+
+
+        return(
+            <View className="h-full w-full">
+
+                <Appbar.Header>
+                    <Appbar.Content title="Customize Shape" />
+                    <Appbar.BackAction onPress={() => {router.back()}} />
+                </Appbar.Header>
+
+                <View className="items-center justify-center">
+                    <Host matchContents={{ vertical: true }} style={{ width: '100%', paddingTop: 20}}>
+
+                        <Column horizontalAlignment={"center"}>
+
+                            {baseShape == "star" && (
+                                <Shape.Star
+                                    verticesCount={corners}
+                                    radius={radius}
+                                    innerRadius={innerRadius}
+                                    cornerRounding={cornerRadius}
+                                    color="#FF9800"
+                                    modifiers={[size(width, width)]}
+
+                                />
+                            )}
+                            {baseShape == "polygon" && (
+                                <Shape.Polygon
+                                    verticesCount={corners}
+                                    cornerRounding={cornerRadius}
+                                    color="#00BCD4"
+                                    modifiers={[size(width, width)]}
+                                />
+                            )}
+
+                            {baseShape == "rectangle" && (
+                                <Shape.RoundedCorner
+                                    cornerRadii={{
+                                        topStart: topStart,
+                                        topEnd: topEnd,
+                                        bottomStart: bottomStart,
+                                        bottomEnd: bottomEnd,
+                                    }}
+                                    color="#FF5722"
+                                    modifiers={[size(width, height), padding(0,10,0,10)]}
+
+                                />
+                            )}
+
+                            {configOptions.map((option, index) => (
+                                <Column horizontalAlignment="center" key={index} modifiers={[padding(0,5,0,0)]}>
+                                    <Text>{option.label}</Text>
+                                    <Box contentAlignment="center" modifiers={[fillMaxWidth()]}>
+                                        <Slider modifiers={[size(250, 50)]}  min={option.min} max={option.max} value={option.value} onValueChange={e => option.setValue(e)} />
+                                    </Box>
+                                </Column>
+                            ))}
+
+
+
+                        </Column>
+                    </Host>
+                </View>
+            </View>
     )
 }

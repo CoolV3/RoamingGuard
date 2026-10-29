@@ -18,7 +18,7 @@ export default function ChooseBaseFormComponent() {
         <View className="h-full w-full">
 
             <Appbar.Header>
-                <Appbar.Content title="Create new Shape" />
+                <Appbar.Content title="Choose Base Shape" />
                 <Appbar.BackAction onPress={() => {router.back()}} />
             </Appbar.Header>
 
