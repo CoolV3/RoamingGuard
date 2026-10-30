@@ -22,6 +22,8 @@ export default function ChooseBaseFormComponent() {
                 <Appbar.BackAction onPress={() => {router.back()}} />
             </Appbar.Header>
 
+
+
             <View className="items-center justify-center">
 
                 <Host matchContents={{ vertical: true }} style={{ width: '100%', paddingTop: 20}}>
@@ -69,7 +71,6 @@ export default function ChooseBaseFormComponent() {
                                     />
                             </Column>
                         </Row>
-
 
                     </Column>
                 </Host>
