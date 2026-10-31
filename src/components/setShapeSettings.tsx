@@ -164,6 +164,11 @@ export default function SetShapeSettings() {
                     </Box>
                 </TextButton>
 
+                <TextButton onClick={() => router.push("/seeAllShapes")} >
+                    <Box contentAlignment="center" >
+                        <Plus pointerEvents="none" color={theme.colors.primary} size={50} className="items-center justify-center"/>
+                    </Box>
+                </TextButton>
                 <TextButton onClick={() => router.push("/chooseBaseFormPage")} >
                     <Box contentAlignment="center" >
                         <Plus pointerEvents="none" color={theme.colors.primary} size={50} className="items-center justify-center"/>

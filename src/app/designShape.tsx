@@ -2,9 +2,11 @@ import { useState } from 'react';
 import {Host, Slider, Shape, Box, Text, Column} from '@expo/ui/jetpack-compose';
 import {fillMaxWidth, padding, size,} from "@expo/ui/jetpack-compose/modifiers";
 import {View} from "react-native";
-import {Appbar, FAB, useTheme} from "react-native-paper";
+import {Appbar, FAB, Portal, useTheme} from "react-native-paper";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {Save} from "lucide-react-native"
+import {addNewShape, type SavedShapeType} from "@/lib/useShapeStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function DesignNewShapeScreen() {
@@ -24,6 +26,33 @@ export default function DesignNewShapeScreen() {
     const theme = useTheme()
     const router = useRouter()
     const { baseShape } = useLocalSearchParams<{baseShape?: string}>()
+
+    const saveShape = async () => {
+        const shapeConfig: SavedShapeType = baseShape == "star" ? {
+            baseShape: "star",
+            radius: radius,
+            innerRadius: innerRadius,
+            cornerRounding: cornerRadius,
+            corners: corners,
+            width: width
+        } : baseShape == "polygon" ? {
+            baseShape: "polygon",
+            corners: corners,
+            cornerRounding: cornerRadius,
+            width: width
+        } : {
+            baseShape: "rectangle",
+            cornerTopLeft: topStart,
+            cornerTopRight: topEnd,
+            cornerBottomLeft: bottomStart,
+            cornerBottomRight: bottomEnd,
+            width: width,
+            height: height
+        }
+        await addNewShape(shapeConfig)
+        router.push("/seeAllShapes")
+    }
+
 
     if ((baseShape != "star") && (baseShape != "polygon") && (baseShape != "rectangle")) {
         router.replace("/chooseBaseFormPage")
@@ -142,18 +171,20 @@ export default function DesignNewShapeScreen() {
 
                 <View className="h-full w-full">
 
-                    <Appbar.Header>
-                        <Appbar.Content title="Customize Shape"/>
-                        <Appbar.BackAction onPress={() => {
-                            router.back()
-                        }}/>
-                    </Appbar.Header>
+                    <Portal>
+                        <Appbar.Header>
+                            <Appbar.Content title="Customize Shape"/>
+                            <Appbar.BackAction onPress={() => {
+                                router.back()
+                            }}/>
+                        </Appbar.Header>
 
-                    <View className="absolute bottom-0 right-0 p-5 flex items-center justify-center">
-                         <FAB size="medium"  icon={({size}) => <Save color={theme.colors.primary} size={size}/>} onPress={() => console.log('Pressed')} className="flex items-center justify-center"/>
-                    </View>
+                        <View className="absolute bottom-0 right-0 p-5 flex items-center justify-center">
+                             <FAB size="medium"  icon={({size}) => <Save color={theme.colors.primary} size={size}/>} onPress={() => saveShape()} className="flex items-center justify-center"/>
+                        </View>
+                    </Portal>
 
-                    <View className="items-center justify-center">
+                    <View className="items-center justify-center pt-30">
                         <Host matchContents={{vertical: true}} style={{width: '100%', paddingTop: 20}}>
 
                             <Column horizontalAlignment={"center"}>
